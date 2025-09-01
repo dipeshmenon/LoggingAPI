@@ -15,20 +15,20 @@ public class AccountService {
     private final AccountRepository accountRepository;
 
     public double getBalance(String username) {
-        Account account = accountRepository.findByUserUsername(username)
+        Account account = accountRepository.findByUsersUsername(username)
                 .orElseThrow(() -> new RuntimeException("Account not found"));
         return account.getBalance();
     }
     @CircuitBreaker(name = "depositCB", fallbackMethod = "depositFallback")
     public void deposit(String username, double amount) {
-        Account account = accountRepository.findByUserUsername(username)
+        Account account = accountRepository.findByUsersUsername(username)
                 .orElseThrow(() -> new RuntimeException("Account not found"));
         account.setBalance(account.getBalance() + amount);
         accountRepository.save(account);
     }
 
     public void withdraw(String username, double amount) {
-        Account account = accountRepository.findByUserUsername(username)
+        Account account = accountRepository.findByUsersUsername(username)
                 .orElseThrow(() -> new RuntimeException("Account not found"));
         if (account.getBalance() < amount) {
             throw new RuntimeException("Insufficient balance");
